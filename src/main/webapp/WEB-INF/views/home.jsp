@@ -4,7 +4,7 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<title>Home</title>
+	<title>Home.jsp</title>
 </head>
 <body>
 	<h2>스프링 MVC 시작하기</h2>
@@ -116,6 +116,23 @@
 		</a>
 	</li>
 	
+	<!-- 
+		Environment 객체를 이용한 외부파일 참조 절차
+		1. 요청명을 결정한다.
+			: environment/main1
+		2. 컨트롤러 생성 및 매핑(@Controller, @RequestMapping)
+		3. /src/main/resources 폴더 하위에 properties 파일을 생성
+			(외부 데이터가 포함된 파일)
+		4. 컨트롤러에서 외부파일을 읽어서 프로그램에 적용
+			4-1) 스프링 컨테이너 생성
+			4-2) Environment 객체 생성
+			4-3) PropertySources 가져옴
+			4-4) 외부파일을 가져와서 addLast로 추가 후 내용읽음
+			4-5) 읽은 내용을 Model에 저장하거나 비즈니스로직에
+				직접 사용함.
+			
+	 -->
+	
 	<!-- 컨트롤러 : EnvironmentController -->
 	<h3>Environment 객체를 이용한 외부파일 참조하기</h3>
 	<li>
@@ -134,6 +151,44 @@
 		</a>
 	</li>
 	
+	<!-- 
+		파일업로드 & 다운로드 구현절차
+		
+		1. pom.xml
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.2.2</version>
+			</dependency>
+			
+		2.servelet-context.xml에 업로드 다운로드 관련 빈 생성
+		
+			<beans:bean id="multipartResolver" 
+				class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+				<beans:property name="maxUploadSize" value="1000000"/>
+			</beans:bean>
+			
+			<beans:bean id="fileDownloadView" class="common.FileDownloadView"></beans:bean>
+			<beans:bean id="fileViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+				<beans:property name="order" value="0"/>
+			</beans:bean>
+		
+		3. 요청명에 따른 컨트롤러 생성
+			- 업로드 폼, 업로드 처리 등을 진행
+			- 파일명 변경을 위해 UUID클래스를 통한 유니크한 문자열 생성
+		4. 파일이외의 나머지 폼값을 확인하는 페이지 작성
+		5. 파일 다운로드를 위해 빈을 생성할 때는 미리
+			common.FileDownloadView 클래스가 생성되어 있어야 한다.
+			응답헤더와 스트림을 통해 파일을 다운로드 하기위한 로직으로
+			구성된다.
+			
+	 -->
+	
 	<h3>파일업로드</h3>
 	<li>
 		<a href="./fileUpload/uploadPath.do" target="_blank">
@@ -150,6 +205,30 @@
 		<a href="./fileUpload/uploadList.do" target="_blank">
 			파일목록보기
 		</a>
+	</li>
+	<!-- 
+		트랜잭션의 개념
+		- 인터넷 뱅킹의 경우 A가 B에게 송금을 진행하는 경우 A에서는 출금되었으나
+			B에서는 입금이 되지않은 상황이 발생된다면 해당 거래는 취소되어야한다.
+		- 이와 같이 양쪽 모두 만족되어야 하나의 프로세스를 완료처리 할 수 있도록
+			해주는 기법을 트랜잭션 이라고 한다.
+		- 즉, 2개 이상의 쿼리를 하나의 커넥션으로 묶어 DB에 전송하고 이 과정에서
+			에러가 발생하는 경우 양쪽 모두를 원래의 상태로 되돌려 놓는다.,
+		
+		절차
+		1. 트랜잭션 매니져를 사용하는 경우
+			1-1. 오라클 드라이버, SPRING-JDBC에 대한 의존설정을 한다.
+			1-2. servlet-context.xml 에서 빈을 생성한다.
+			1-3. TicketDAO의 빈을 컨트롤러에서 자동주입 받아 사용한다.
+			1-4. 2개 이상의 작업을 try~catch로 묶어 하나라도 오류가 발생하는 경우
+				모든 작업을 rollback 시킨다. 모든 작업이 정상처리 되었다면
+				commit 시킨다.
+	 -->
+	<!-- 컨트롤러 : TransactionController -->
+	<h3>트랜잭션(Transaction)</h3>	
+	<li>
+		<a href="transaction/buyTicketMain.do" target="_blank">
+		티켓구매하기1</a>		
 	</li>
 	
 	

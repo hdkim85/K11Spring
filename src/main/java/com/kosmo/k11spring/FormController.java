@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.tags.Param;
 
 import common.MemberDTO;
 
@@ -122,7 +123,7 @@ public class FormController {
 					@PathVariable String memberName) {
 		
 		model.addAttribute("memberId", memberId);
-		model.addAttribute("memberName", memberName);
+		model.addAttribute("memberName", memberName);			
 		
 		return "01Form/pathVariable";
 	}

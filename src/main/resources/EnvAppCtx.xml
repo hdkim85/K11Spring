@@ -7,7 +7,7 @@
 	
 	<!-- 
 		Environment 객체를 사용하지 않고 XML설정파일에서 바로 외부파일을
-		가져오기 위해 "context"네이스페이스를 추가한다.
+		가져오기 위해 "context"네임스페이스를 추가한다.
 		파일생성시 혹은 하단 탭에서 추가하면 된다.
 		아래와 같은 항목이 <beans 엘리먼트에 추가된다.
 		xmlns:context="http://www.springframework.org/schema/context"
